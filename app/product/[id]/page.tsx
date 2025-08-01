@@ -39,6 +39,7 @@ export default function ProductPage() {
 
     fetchProduct()
     fetchReviews()
+    checkWishlistStatus()
   }, [params.id, user])
 
   const fetchProduct = async () => {
@@ -74,6 +75,24 @@ export default function ProductPage() {
       }
     } catch (error) {
       console.error("Error fetching reviews:", error)
+    }
+  }
+
+  const checkWishlistStatus = async () => {
+    if (!token) return
+
+    try {
+      const response = await fetch("/api/wishlist", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await response.json()
+
+      if (response.ok) {
+        const isInWishlist = data.items.some((item: any) => item.productId === params.id)
+        setIsWishlisted(isInWishlist)
+      }
+    } catch (error) {
+      console.error("Error checking wishlist status:", error)
     }
   }
 

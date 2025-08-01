@@ -70,6 +70,21 @@ function MerchantDashboardContent() {
     fetchDashboardData()
   }, [user, token, router, authLoading])
 
+  // Update stats whenever products or orders change
+  useEffect(() => {
+    const totalProducts = products.length
+    const activeProducts = products.filter((p) => p.isActive).length
+    const totalOrders = orders.length
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
+
+    setStats({
+      totalProducts,
+      activeProducts,
+      totalOrders,
+      totalRevenue,
+    })
+  }, [products, orders])
+
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Are you sure you want to delete this product?')) {
       return
@@ -129,18 +144,7 @@ function MerchantDashboardContent() {
         setOrders(ordersData.orders)
       }
 
-      // Calculate stats
-      const totalProducts = products.length
-      const activeProducts = products.filter((p) => p.isActive).length
-      const totalOrders = orders.length
-      const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
-
-      setStats({
-        totalProducts,
-        activeProducts,
-        totalOrders,
-        totalRevenue,
-      })
+      // Stats will be calculated in useEffect when data changes
     } catch (error) {
       console.error("Error fetching dashboard data:", error)
     } finally {
