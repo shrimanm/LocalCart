@@ -49,9 +49,15 @@ function HomePageContent() {
       return
     }
 
+    // Check if user needs to complete profile
+    if (!user.name || !user.age) {
+      router.push("/onboarding")
+      return
+    }
+
     fetchProducts()
     fetchWishlist()
-  }, [user, selectedCategory, sortBy, searchQuery, priceRange, pagination.page])
+  }, [user, selectedCategory, sortBy, searchQuery, priceRange, pagination.page, router])
 
   const fetchProducts = async () => {
     setLoading(true)

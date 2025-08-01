@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/app/providers"
 import { useRouter } from "next/navigation"
-import { User, Mail, Calendar, Users, MapPin, Heart, Bell } from "lucide-react"
+import { User, Mail, Calendar, Users, MapPin, Heart, Bell, ArrowLeft } from "lucide-react"
 
 const interests = [
   "Men's Fashion",
@@ -60,8 +60,13 @@ export default function OnboardingForm() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const { token, user, login } = useAuth()
+  const { token, user, login, logout } = useAuth()
   const router = useRouter()
+
+  const handleBackToLogin = () => {
+    logout()
+    router.push("/")
+  }
 
   const handleInterestToggle = (interest: string) => {
     setFormData((prev) => ({
@@ -139,8 +144,8 @@ export default function OnboardingForm() {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <User className="h-8 w-8 text-pink-600" />
+        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <User className="h-8 w-8 text-[#00B4D8]" />
         </div>
         <h3 className="text-xl font-semibold">Basic Information</h3>
         <p className="text-gray-600">Tell us about yourself</p>
@@ -240,8 +245,8 @@ export default function OnboardingForm() {
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Heart className="h-8 w-8 text-pink-600" />
+        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="h-8 w-8 text-[#00B4D8]" />
         </div>
         <h3 className="text-xl font-semibold">Your Interests</h3>
         <p className="text-gray-600">Help us personalize your experience</p>
@@ -256,14 +261,14 @@ export default function OnboardingForm() {
               onClick={() => handleInterestToggle(interest)}
               className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
                 formData.interests.includes(interest)
-                  ? "border-pink-500 bg-pink-50 text-pink-700"
-                  : "border-gray-200 hover:border-pink-300"
+                  ? "border-[#00B4D8] bg-cyan-50 text-[#00B4D8]"
+                  : "border-gray-200 hover:border-cyan-300"
               }`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{interest}</span>
                 {formData.interests.includes(interest) && (
-                  <Badge variant="secondary" className="bg-pink-100 text-pink-700">
+                  <Badge variant="secondary" className="bg-cyan-100 text-[#00B4D8]">
                     ✓
                   </Badge>
                 )}
@@ -278,8 +283,8 @@ export default function OnboardingForm() {
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Bell className="h-8 w-8 text-pink-600" />
+        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Bell className="h-8 w-8 text-[#00B4D8]" />
         </div>
         <h3 className="text-xl font-semibold">Notification Preferences</h3>
         <p className="text-gray-600">Choose how you'd like to hear from us</p>
@@ -336,16 +341,28 @@ export default function OnboardingForm() {
   )
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 p-4">
-      <Card className="w-full max-w-lg shadow-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-blue-50 p-4">
+      <div className="w-full max-w-lg">
+        {/* Top Back Button - Go to Login */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleBackToLogin}
+          className="mb-4 p-2 hover:bg-cyan-100 text-[#00B4D8]"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Login
+        </Button>
+        
+        <Card className="w-full shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-pink-600">Complete Your Profile</CardTitle>
-          <CardDescription>Step {step} of 3 - Let's personalize your Myntra experience</CardDescription>
+          <CardTitle className="text-2xl font-bold text-[#00B4D8]">Complete Your Profile</CardTitle>
+          <CardDescription>Step {step} of 3 - Let's personalize your LocalCart experience</CardDescription>
 
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
             <div
-              className="bg-pink-600 h-2 rounded-full transition-all duration-300"
+              className="bg-[#00B4D8] h-2 rounded-full transition-all duration-300"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
@@ -382,14 +399,15 @@ export default function OnboardingForm() {
               <Button
                 type="submit"
                 disabled={loading}
-                className={`bg-pink-600 hover:bg-pink-700 px-6 ${step === 1 ? "ml-auto" : ""}`}
+                className={`bg-[#00B4D8] hover:bg-[#0096C7] px-6 ${step === 1 ? "ml-auto" : ""}`}
               >
                 {loading ? "Saving..." : step === 3 ? "Complete Profile" : "Next"}
               </Button>
             </div>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

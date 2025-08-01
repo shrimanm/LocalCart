@@ -94,6 +94,11 @@ export default function LoginForm() {
 
       if (response.ok) {
         login(data.token, data.user)
+        
+        // Check if user needs to complete profile
+        if (!data.user.name || !data.user.age) {
+          window.location.href = "/onboarding"
+        }
       } else {
         setError(data.error || "Invalid OTP")
       }

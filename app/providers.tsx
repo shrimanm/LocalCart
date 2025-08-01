@@ -45,6 +45,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser)
     localStorage.setItem("token", newToken)
     localStorage.setItem("user", JSON.stringify(newUser))
+    
+    // Check if user needs to complete profile
+    if (!newUser.name || !newUser.age) {
+      // Don't redirect here, let the component handle it
+      return
+    }
   }
 
   const logout = () => {
