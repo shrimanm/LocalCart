@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 import { AuthenticationError, AuthorizationError } from './errors'
 
-const JWT_SECRET = process.env.JWT_SECRET!
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key'
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
 
 export interface JWTPayload {
@@ -13,8 +13,12 @@ export interface JWTPayload {
 }
 
 export function generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
+  if (!JWT_SECRET) {
+    throw new AuthenticationError('JWT secret not configured')
+  }
+  
   try {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions)
   } catch (error) {
     throw new AuthenticationError('Failed to generate authentication token')
   }

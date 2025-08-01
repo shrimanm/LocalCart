@@ -24,7 +24,7 @@ export function withValidation<T>(schema: any, handler: (request: NextRequest, c
       const validation = schema.safeParse(body)
       
       if (!validation.success) {
-        const errorMessage = validation.error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+        const errorMessage = validation.error.errors.map((err: { path: (string | number)[]; message: string }) => `${err.path.join('.')}: ${err.message}`).join(', ')
         return NextResponse.json({ error: errorMessage }, { status: 400 })
       }
       

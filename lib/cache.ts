@@ -78,8 +78,8 @@ export function setCachedData(key: string, data: any, ttlSeconds: number = 300):
 
 export function invalidateCache(pattern: string): void {
   // Simple pattern matching for cache invalidation
-  const keys = Array.from((cache as any).cache.keys())
-  keys.forEach(key => {
+  const keys = Array.from((cache as any).cache.keys()) as string[]
+  keys.forEach((key) => {
     if (key.includes(pattern)) {
       cache.delete(key)
     }
