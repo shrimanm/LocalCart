@@ -112,57 +112,61 @@ export default function ProductCard({ product, onWishlistToggle, isWishlisted = 
 
         </div>
 
-        <div className="p-2 lg:p-4 space-y-1 lg:space-y-2">
-          {/* Brand */}
-          <p className="product-brand truncate">{product.brand}</p>
+        <div className="p-2 lg:p-4 flex flex-col h-full">
+          <div className="flex-1 space-y-1 lg:space-y-2">
+            {/* Brand */}
+            <p className="product-brand truncate">{product.brand}</p>
 
-          {/* Product Name */}
-          <h3 className="product-title line-clamp-2 group-hover:text-[#00B4D8] transition-colors">
-            {product.name}
-          </h3>
+            {/* Product Name */}
+            <h3 className="product-title line-clamp-2 group-hover:text-[#00B4D8] transition-colors">
+              {product.name}
+            </h3>
 
-          {/* Rating */}
-          <div className="flex items-center space-x-1">
-            <div className="flex items-center">
-              <Star className="h-3 w-3 lg:h-4 lg:w-4 fill-yellow-400 text-yellow-400" />
-              <span className="product-rating ml-1">{product.rating.toFixed(1)}</span>
+            {/* Rating */}
+            <div className="flex items-center space-x-1">
+              <div className="flex items-center">
+                <Star className="h-3 w-3 lg:h-4 lg:w-4 fill-yellow-400 text-yellow-400" />
+                <span className="product-rating ml-1">{product.rating.toFixed(1)}</span>
+              </div>
+              <span className="product-rating text-gray-500">({product.reviewCount})</span>
             </div>
-            <span className="product-rating text-gray-500">({product.reviewCount})</span>
+
+            {/* Price */}
+            <div className="flex items-center space-x-1 lg:space-x-2">
+              <span className="product-price">{formatPrice(product.price)}</span>
+              {product.originalPrice && (
+                <span className="product-original-price">{formatPrice(product.originalPrice)}</span>
+              )}
+            </div>
+
+            {/* Variants Preview - Hidden on mobile - Fixed height container */}
+            <div className="hidden lg:block h-12">
+              {((product.variants && product.variants.length > 0) || (product.sizes && product.sizes.length > 0)) && (
+                <>
+                  <div className="flex items-start space-x-1 mb-1">
+                    <span className="text-xs text-gray-500 flex-shrink-0">
+                      {product.variantType ? product.variantType.charAt(0).toUpperCase() + product.variantType.slice(1) : 'Sizes'}:
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {(product.variants || product.sizes || []).slice(0, 3).map((variant, index) => (
+                      <span key={index} className="text-xs bg-gray-100 px-1.5 py-0.5 rounded truncate max-w-[60px]">
+                        {variant}
+                      </span>
+                    ))}
+                    {(product.variants || product.sizes || []).length > 3 && (
+                      <span className="text-xs text-gray-500">+{(product.variants || product.sizes || []).length - 3}</span>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Price */}
-          <div className="flex items-center space-x-1 lg:space-x-2">
-            <span className="product-price">{formatPrice(product.price)}</span>
-            {product.originalPrice && (
-              <span className="product-original-price">{formatPrice(product.originalPrice)}</span>
-            )}
-          </div>
-
-          {/* Variants Preview - Hidden on mobile */}
-          {((product.variants && product.variants.length > 0) || (product.sizes && product.sizes.length > 0)) && (
-            <div className="hidden lg:block">
-              <div className="flex items-start space-x-1 mb-1">
-                <span className="text-xs text-gray-500 flex-shrink-0">
-                  {product.variantType ? product.variantType.charAt(0).toUpperCase() + product.variantType.slice(1) : 'Sizes'}:
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {(product.variants || product.sizes || []).slice(0, 3).map((variant, index) => (
-                  <span key={index} className="text-xs bg-gray-100 px-1.5 py-0.5 rounded truncate max-w-[60px]">
-                    {variant}
-                  </span>
-                ))}
-                {(product.variants || product.sizes || []).length > 3 && (
-                  <span className="text-xs text-gray-500">+{(product.variants || product.sizes || []).length - 3}</span>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Add to Wishlist Button */}
+          {/* Add to Wishlist Button - Always at bottom */}
           <Button
             onClick={handleAddToWishlist}
-            className={`w-full btn-text py-1 lg:py-2 ${
+            className={`w-full btn-text py-1 lg:py-2 mt-2 ${
               isWishlisted ? "bg-[#0077B6] hover:bg-[#005F8C] text-white" : "border border-[#0077B6] text-[#0077B6] hover:bg-[#0077B6] hover:text-white bg-white"
             }`}
             size="sm"

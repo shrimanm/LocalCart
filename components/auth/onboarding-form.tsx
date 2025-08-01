@@ -142,14 +142,17 @@ export default function OnboardingForm() {
       })
 
       const data = await response.json()
+      console.log('Profile update response:', { status: response.status, data })
 
       if (response.ok) {
         login(token!, data.user)
         router.push("/home")
       } else {
+        console.error('Profile update failed:', data)
         setError(data.error || "Failed to update profile")
       }
     } catch (error) {
+      console.error('Profile update error:', error)
       setError("Network error. Please try again.")
     } finally {
       setLoading(false)

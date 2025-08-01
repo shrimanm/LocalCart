@@ -11,6 +11,7 @@ import { Heart, Star, Eye, Calendar, CheckCircle, Share2, ArrowLeft } from "luci
 import type { Product } from "@/lib/types"
 import { formatPrice } from "@/lib/utils"
 import BottomNav from "@/components/ui/bottom-nav"
+import BookingDialog from "@/components/ui/booking-dialog"
 
 export default function ProductPage() {
   const params = useParams()
@@ -30,6 +31,9 @@ export default function ProductPage() {
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" })
   const [submittingReview, setSubmittingReview] = useState(false)
+  const [isBooked, setIsBooked] = useState(false)
+  const [bookingLoading, setBookingLoading] = useState(false)
+  const [bookingDialog, setBookingDialog] = useState<{ isOpen: boolean; product: any }>({ isOpen: false, product: null })
 
   useEffect(() => {
     if (!user) {
@@ -40,6 +44,7 @@ export default function ProductPage() {
     fetchProduct()
     fetchReviews()
     checkWishlistStatus()
+    checkBookingStatus()
   }, [params.id, user])
 
   const fetchProduct = async () => {
@@ -93,6 +98,79 @@ export default function ProductPage() {
       }
     } catch (error) {
       console.error("Error checking wishlist status:", error)
+    }
+  }
+
+  const checkBookingStatus = async () => {
+    if (!token) return
+
+    try {
+      const response = await fetch("/api/booked", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await response.json()
+
+      if (response.ok) {
+        const isInBooked = data.items.some((item: any) => item.productId === params.id)
+        setIsBooked(isInBooked)
+      }
+    } catch (error) {
+      console.error("Error checking booking status:", error)
+    }
+  }
+
+  const handleBookClick = () => {
+    if (isBooked) {
+      // If already booked, unbook directly
+      handleBookNow()
+    } else {
+      // If not booked, show confirmation dialog
+      setBookingDialog({ isOpen: true, product })
+    }
+  }
+
+  const confirmBooking = async () => {
+    setBookingLoading(true)
+    try {
+      await handleBookNow()
+      setBookingDialog({ isOpen: false, product: null })
+    } catch (error) {
+      console.error("Error confirming booking:", error)
+    } finally {
+      setBookingLoading(false)
+    }
+  }
+
+  const handleBookNow = async () => {
+    if (!token || !product) return
+
+    try {
+      const response = await fetch("/api/booked", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId: product.id }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setIsBooked(data.action === "added")
+      }
+    } catch (error) {
+      console.error("Error booking product:", error)
+    }
+  }
+
+  const handleShare = async () => {
+    const url = window.location.href
+    try {
+      await navigator.clipboard.writeText(url)
+      // You can add a toast notification here if needed
+      console.log('URL copied to clipboard')
+    } catch (error) {
+      console.error('Failed to copy URL:', error)
     }
   }
 
@@ -250,6 +328,15 @@ export default function ProductPage() {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
+              {/* Share Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                className="absolute top-2 right-2 bg-white/80 hover:bg-white p-2 rounded-full z-10"
+              >
+                <Share2 className="h-4 w-4 text-gray-600" />
+              </Button>
               {/* Navigation arrows for web */}
               {product.images.length > 1 && (
                 <>
@@ -392,17 +479,22 @@ export default function ProductPage() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex space-x-4">
+            <div className="flex space-x-3">
               <Button
                 onClick={handleAddToWishlist}
                 disabled={addingToWishlist}
                 className={`flex-1 ${isWishlisted ? 'bg-[#0077B6] hover:bg-[#005F8C] text-white' : 'border border-[#0077B6] text-[#0077B6] hover:bg-[#0077B6] hover:text-white bg-white'}`}
               >
                 <Heart className="h-5 w-5 mr-2" />
-                {addingToWishlist ? "Adding..." : isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                {addingToWishlist ? "Adding..." : isWishlisted ? "Remove" : "Add"}
               </Button>
-              <Button variant="outline">
-                <Share2 className="h-5 w-5" />
+              <Button
+                onClick={handleBookClick}
+                disabled={bookingLoading}
+                className={`flex-1 ${isBooked ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+              >
+                <Calendar className="h-5 w-5 mr-2" />
+                {bookingLoading ? "Booking..." : isBooked ? "Unbook" : "Book Now"}
               </Button>
             </div>
 
@@ -538,6 +630,21 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+      
+      {/* Booking Confirmation Dialog */}
+      <BookingDialog
+        isOpen={bookingDialog.isOpen}
+        onClose={() => setBookingDialog({ isOpen: false, product: null })}
+        onConfirm={confirmBooking}
+        product={bookingDialog.product ? {
+          name: bookingDialog.product.name,
+          price: bookingDialog.product.price,
+          images: bookingDialog.product.images,
+          brand: bookingDialog.product.brand
+        } : { name: '', price: 0, images: [], brand: '' }}
+        loading={bookingLoading}
+      />
+      
       <BottomNav />
     </div>
   )

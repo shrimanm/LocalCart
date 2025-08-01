@@ -13,6 +13,7 @@ import { Store, Package, TrendingUp, Users, Plus, Edit, Eye, Trash2 } from "luci
 import RouteGuard from "@/components/auth/route-guard"
 import { formatPrice } from "@/lib/utils"
 import { Notification, useNotification } from "@/components/ui/notification"
+import ConfirmationDialog from "@/components/ui/confirmation-dialog"
 
 interface Shop {
   id: string
@@ -50,6 +51,8 @@ function MerchantDashboardContent() {
     activeProducts: 0,
   })
   const [loading, setLoading] = useState(true)
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; productId: string; productName: string }>({ isOpen: false, productId: '', productName: '' })
+  const [deleting, setDeleting] = useState(false)
   const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
   const { notification, showNotification, hideNotification } = useNotification()
@@ -85,33 +88,38 @@ function MerchantDashboardContent() {
     })
   }, [products, orders])
 
-  const handleDeleteProduct = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) {
-      return
-    }
+  const handleDeleteClick = (productId: string, productName: string) => {
+    setDeleteDialog({ isOpen: true, productId, productName })
+  }
 
+  const confirmDelete = async () => {
+    setDeleting(true)
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`/api/products/${deleteDialog.productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
 
       if (response.ok) {
-        const deletedProduct = products.find(p => p.id === productId)
+        const deletedProduct = products.find(p => p.id === deleteDialog.productId)
         // Update products list
-        setProducts(products.filter(p => p.id !== productId))
+        setProducts(products.filter(p => p.id !== deleteDialog.productId))
         // Update stats immediately
         setStats(prev => ({
           ...prev,
           totalProducts: prev.totalProducts - 1,
           activeProducts: deletedProduct?.isActive ? prev.activeProducts - 1 : prev.activeProducts
         }))
+        showNotification('Product deleted successfully', 'success')
       } else {
         showNotification('Failed to delete product', 'error')
       }
     } catch (error) {
       console.error('Error deleting product:', error)
       showNotification('Error deleting product', 'error')
+    } finally {
+      setDeleting(false)
+      setDeleteDialog({ isOpen: false, productId: '', productName: '' })
     }
   }
 
@@ -327,7 +335,7 @@ function MerchantDashboardContent() {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => handleDeleteProduct(product.id)}
+                            onClick={() => handleDeleteClick(product.id, product.name)}
                             title="Delete Product"
                             className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
@@ -412,6 +420,18 @@ function MerchantDashboardContent() {
           </TabsContent>
         </Tabs>
       </main>
+      
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog({ isOpen: false, productId: '', productName: '' })}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${deleteDialog.productName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        loading={deleting}
+        variant="danger"
+      />
     </div>
   )
 }

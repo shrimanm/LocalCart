@@ -34,17 +34,20 @@ export default function WishlistPage() {
   const [bookedItems, setBookedItems] = useState<Set<string>>(new Set())
   const [bookingDialog, setBookingDialog] = useState<{ isOpen: boolean; product: WishlistItem | null }>({ isOpen: false, product: null })
   const [bookingLoading, setBookingLoading] = useState(false)
-  const { user, token } = useAuth()
+  const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!user || !token) {
+    if (!user && !loading) {
       router.push("/")
       return
     }
-    fetchWishlist()
-    fetchBookedItems()
-  }, [user, token, router])
+    
+    if (user && token) {
+      fetchWishlist()
+      fetchBookedItems()
+    }
+  }, [user, token, router, loading])
 
   const fetchWishlist = async () => {
     try {
@@ -175,6 +178,14 @@ export default function WishlistPage() {
     }
   }
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#00B4D8]"></div>
+      </div>
+    )
+  }
+  
   if (!user) return null
 
   return (

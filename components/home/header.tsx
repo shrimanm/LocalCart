@@ -101,6 +101,12 @@ export default function Header() {
     localStorage.removeItem('recentSearches')
   }
 
+  const clearSearch = () => {
+    setSearchQuery('')
+    setShowSuggestions(false)
+    router.push('/home')
+  }
+
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,7 +120,6 @@ export default function Header() {
           {/* Search Bar - Hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8" ref={searchRef}>
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 ref={inputRef}
                 type="text"
@@ -123,8 +128,28 @@ export default function Header() {
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-10 pr-4 py-2 w-full"
+                className="pl-4 pr-16 py-2 w-full"
               />
+              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="h-6 w-6 p-0 hover:bg-gray-100"
+                  >
+                    <X className="h-3 w-3 text-gray-400" />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSearch()}
+                  className="h-6 w-6 p-0 hover:bg-cyan-100 text-[#00B4D8]"
+                >
+                  <Search className="h-3 w-3" />
+                </Button>
+              </div>
               
               {/* Search Suggestions Dropdown */}
               {showSuggestions && (searchQuery.length > 0 || recentSearches.length > 0) && (
@@ -186,22 +211,14 @@ export default function Header() {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-4">
-            {/* Mobile search */}
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-
             {/* Notifications */}
             <NotificationBell />
-
-
           </div>
         </div>
 
         {/* Mobile search bar */}
         <div className="md:hidden pb-3" ref={searchRef}>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="text"
               placeholder="Search for products, brands and more"
@@ -209,8 +226,28 @@ export default function Header() {
               onChange={handleInputChange}
               onFocus={handleInputFocus}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="pl-10 pr-4 py-2 w-full"
+              className="pl-4 pr-16 py-2 w-full"
             />
+            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearSearch}
+                  className="h-6 w-6 p-0 hover:bg-gray-100"
+                >
+                  <X className="h-3 w-3 text-gray-400" />
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleSearch()}
+                className="h-6 w-6 p-0 hover:bg-cyan-100 text-[#00B4D8]"
+              >
+                <Search className="h-3 w-3" />
+              </Button>
+            </div>
             
             {/* Mobile Search Suggestions */}
             {showSuggestions && (searchQuery.length > 0 || recentSearches.length > 0) && (

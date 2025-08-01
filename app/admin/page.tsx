@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Shield, Users, Store, Package, TrendingUp, Search, CheckCircle, XCircle, Trash2 } from "lucide-react"
 import { Notification, useNotification } from "@/components/ui/notification"
+import ConfirmationDialog from "@/components/ui/confirmation-dialog"
 
 interface User {
   id: string
@@ -46,6 +47,9 @@ export default function AdminPanel() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterRole, setFilterRole] = useState("all")
   const [loading, setLoading] = useState(true)
+  const [deleteUserDialog, setDeleteUserDialog] = useState<{ isOpen: boolean; userId: string; userName: string }>({ isOpen: false, userId: '', userName: '' })
+  const [deleteShopDialog, setDeleteShopDialog] = useState<{ isOpen: boolean; shopId: string; shopName: string }>({ isOpen: false, shopId: '', shopName: '' })
+  const [deleting, setDeleting] = useState(false)
   const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
   const { notification, showNotification, hideNotification } = useNotification()
@@ -121,29 +125,35 @@ export default function AdminPanel() {
     }
   }
 
-  const deleteUser = async (userId: string) => {
-    if (!confirm("Are you sure you want to delete this user? This will also delete all their data.")) {
-      return
-    }
+  const handleDeleteUserClick = (userId: string, userName: string) => {
+    setDeleteUserDialog({ isOpen: true, userId, userName })
+  }
 
+  const confirmDeleteUser = async () => {
+    setDeleting(true)
     try {
-      const response = await fetch(`/api/admin/users?userId=${userId}`, {
+      const response = await fetch(`/api/admin/users?userId=${deleteUserDialog.userId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })
 
       if (response.ok) {
-        const deletedUser = users.find(u => u.id === userId)
-        setUsers(users.filter((u) => u.id !== userId))
+        const deletedUser = users.find(u => u.id === deleteUserDialog.userId)
+        setUsers(users.filter((u) => u.id !== deleteUserDialog.userId))
         setStats(prev => ({
           ...prev,
           totalUsers: prev.totalUsers - 1,
           totalMerchants: deletedUser?.role === 'merchant' ? prev.totalMerchants - 1 : prev.totalMerchants
         }))
         showNotification("User deleted successfully", "success")
+      } else {
+        showNotification("Failed to delete user", "error")
       }
     } catch (error) {
       showNotification("Failed to delete user", "error")
+    } finally {
+      setDeleting(false)
+      setDeleteUserDialog({ isOpen: false, userId: '', userName: '' })
     }
   }
 
@@ -167,29 +177,35 @@ export default function AdminPanel() {
     }
   }
 
-  const deleteShop = async (shopId: string) => {
-    if (!confirm("Are you sure you want to delete this shop? This will also delete all its products.")) {
-      return
-    }
+  const handleDeleteShopClick = (shopId: string, shopName: string) => {
+    setDeleteShopDialog({ isOpen: true, shopId, shopName })
+  }
 
+  const confirmDeleteShop = async () => {
+    setDeleting(true)
     try {
-      const response = await fetch(`/api/admin/shops?shopId=${shopId}`, {
+      const response = await fetch(`/api/admin/shops?shopId=${deleteShopDialog.shopId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })
 
       if (response.ok) {
-        const deletedShop = shops.find(s => s.id === shopId)
-        setShops(shops.filter((s) => s.id !== shopId))
+        const deletedShop = shops.find(s => s.id === deleteShopDialog.shopId)
+        setShops(shops.filter((s) => s.id !== deleteShopDialog.shopId))
         setStats(prev => ({
           ...prev,
           totalShops: prev.totalShops - 1,
           verifiedShops: deletedShop?.isVerified ? prev.verifiedShops - 1 : prev.verifiedShops
         }))
         showNotification("Shop deleted successfully", "success")
+      } else {
+        showNotification("Failed to delete shop", "error")
       }
     } catch (error) {
       showNotification("Failed to delete shop", "error")
+    } finally {
+      setDeleting(false)
+      setDeleteShopDialog({ isOpen: false, shopId: '', shopName: '' })
     }
   }
 
@@ -381,7 +397,7 @@ export default function AdminPanel() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => deleteUser(user.id)}
+                            onClick={() => handleDeleteUserClick(user.id, user.name || 'Unnamed User')}
                             className="p-2"
                           >
                             <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -437,7 +453,7 @@ export default function AdminPanel() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => deleteShop(shop.id)}
+                            onClick={() => handleDeleteShopClick(shop.id, shop.name)}
                             className="p-2"
                           >
                             <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -480,6 +496,30 @@ export default function AdminPanel() {
           </TabsContent>
         </Tabs>
       </main>
+      
+      {/* Delete User Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteUserDialog.isOpen}
+        onClose={() => setDeleteUserDialog({ isOpen: false, userId: '', userName: '' })}
+        onConfirm={confirmDeleteUser}
+        title="Delete User"
+        message={`Are you sure you want to delete "${deleteUserDialog.userName}"? This will permanently delete all their data including orders, wishlist, and bookings.`}
+        confirmText="Delete User"
+        loading={deleting}
+        variant="danger"
+      />
+      
+      {/* Delete Shop Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteShopDialog.isOpen}
+        onClose={() => setDeleteShopDialog({ isOpen: false, shopId: '', shopName: '' })}
+        onConfirm={confirmDeleteShop}
+        title="Delete Shop"
+        message={`Are you sure you want to delete "${deleteShopDialog.shopName}"? This will permanently delete the shop and all its products.`}
+        confirmText="Delete Shop"
+        loading={deleting}
+        variant="danger"
+      />
     </div>
   )
 }

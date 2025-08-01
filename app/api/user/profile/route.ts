@@ -60,29 +60,39 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const token = request.headers.get("authorization")?.replace("Bearer ", "")
+    console.log('Profile update request - Token present:', !!token)
 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const decoded = verifyJWT(token)
+    console.log('Profile update request - Token decoded:', !!decoded, decoded?.userId)
     if (!decoded) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 })
     }
 
     const updateData = await request.json()
+    console.log('Profile update request - Data:', updateData)
     const db = await connectToDatabase()
+
+    // Handle null email to avoid unique constraint violation
+    const cleanUpdateData = { ...updateData }
+    if (cleanUpdateData.email === null || cleanUpdateData.email === '') {
+      delete cleanUpdateData.email // Don't update email field if null/empty
+    }
 
     // Update user profile
     const result = await db.collection("users").updateOne(
       { _id: new ObjectId(decoded.userId) },
       {
         $set: {
-          ...updateData,
+          ...cleanUpdateData,
           updatedAt: new Date(),
         },
       },
     )
+    console.log('Profile update result:', { matchedCount: result.matchedCount, modifiedCount: result.modifiedCount })
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })

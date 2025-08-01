@@ -15,7 +15,7 @@ import { User, MapPin, LogOut, Heart, Package, Store, Shield } from "lucide-reac
 import BottomNav from "@/components/ui/bottom-nav"
 
 export default function ProfilePage() {
-  const { user, token, logout, updateUser } = useAuth()
+  const { user, token, logout, updateUser, loading: authLoading } = useAuth()
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -27,14 +27,24 @@ export default function ProfilePage() {
     city: "",
   })
 
+
   useEffect(() => {
-    if (!user) {
+    if (!user && !authLoading) {
       router.push("/")
       return
     }
 
-    fetchUserProfile()
-  }, [user, token])
+    if (user && token) {
+      fetchUserProfile()
+      
+      // Check for role updates every 30 seconds
+      const interval = setInterval(() => {
+        checkForRoleUpdate()
+      }, 30000)
+      
+      return () => clearInterval(interval)
+    }
+  }, [user, token, authLoading])
 
   const fetchUserProfile = async () => {
     if (!token) return
@@ -54,11 +64,41 @@ export default function ProfilePage() {
           gender: userData.gender || "",
           city: userData.city || "",
         })
+        
+        // Update user context if role has changed
+        if (userData.role !== user?.role) {
+          updateUser(userData)
+        }
       }
     } catch (error) {
       console.error("Error fetching profile:", error)
     }
   }
+  
+  const checkForRoleUpdate = async () => {
+    if (!token) return
+
+    try {
+      const response = await fetch("/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        const userData = data.user
+        
+        // Update user context if role has changed
+        if (userData.role !== user?.role) {
+          console.log('Role updated from', user?.role, 'to', userData.role)
+          updateUser(userData)
+        }
+      }
+    } catch (error) {
+      console.error("Error checking role update:", error)
+    }
+  }
+
+
 
   const handleSave = async () => {
     if (!token) return
@@ -87,8 +127,8 @@ export default function ProfilePage() {
         if (data.user) {
           updateUser(data.user)
         }
-        // Force re-fetch user data to ensure UI updates
-        window.location.reload()
+        // Re-fetch profile data to update UI
+        await fetchUserProfile()
       }
     } catch (error) {
       console.error("Error updating profile:", error)
@@ -102,12 +142,16 @@ export default function ProfilePage() {
     router.push("/")
   }
 
-  if (!user) {
+  if (authLoading || (!user && authLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B4D8]"></div>
       </div>
     )
+  }
+
+  if (!user) {
+    return null // Will redirect in useEffect
   }
 
   return (
@@ -255,6 +299,10 @@ export default function ProfilePage() {
                 <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/wishlist")}>
                   <Heart className="h-4 w-4 mr-2" />
                   My Wishlist
+                </Button>
+                <Button variant="ghost" className="w-full justify-start" onClick={checkForRoleUpdate}>
+                  <User className="h-4 w-4 mr-2" />
+                  Refresh Status
                 </Button>
                 <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/booked")}>
                   <Package className="h-4 w-4 mr-2" />

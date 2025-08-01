@@ -28,16 +28,19 @@ interface BookedItem {
 export default function BookedPage() {
   const [items, setItems] = useState<BookedItem[]>([])
   const [loading, setLoading] = useState(true)
-  const { user, token } = useAuth()
+  const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!user || !token) {
+    if (!user && !loading) {
       router.push("/")
       return
     }
-    fetchBookedItems()
-  }, [user, token, router])
+    
+    if (user && token) {
+      fetchBookedItems()
+    }
+  }, [user, token, router, loading])
 
   const fetchBookedItems = async () => {
     try {
@@ -91,6 +94,14 @@ export default function BookedPage() {
     }
   }
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#00B4D8]"></div>
+      </div>
+    )
+  }
+  
   if (!user) return null
 
   return (

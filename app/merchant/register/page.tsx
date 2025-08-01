@@ -67,7 +67,7 @@ export default function MerchantRegisterPage() {
         // Force refresh to update user context
         setTimeout(() => {
           window.location.href = "/profile"
-        }, 2000)
+        }, 1500)
       } else {
         setError(data.error || "Failed to register shop")
       }
@@ -81,7 +81,7 @@ export default function MerchantRegisterPage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50 p-4">
       <Notification
         message={notification.message}
         type={notification.type}
@@ -96,10 +96,10 @@ export default function MerchantRegisterPage() {
 
         <Card>
           <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
-              <Store className="h-6 w-6 text-pink-600" />
+            <div className="mx-auto w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mb-4">
+              <Store className="h-6 w-6 text-[#00B4D8]" />
             </div>
-            <CardTitle className="text-2xl font-bold text-pink-600">Register Your Shop</CardTitle>
+            <CardTitle className="text-2xl font-bold text-[#00B4D8]">Register Your Shop</CardTitle>
             <CardDescription>
               Fill in the details below to register your shop and start selling on our platform
             </CardDescription>
@@ -166,7 +166,7 @@ export default function MerchantRegisterPage() {
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
 
-              <Button type="submit" disabled={loading} className="w-full bg-pink-600 hover:bg-pink-700">
+              <Button type="submit" disabled={loading} className="w-full bg-[#00B4D8] hover:bg-[#0096C7]">
                 {loading ? "Registering..." : "Register Shop"}
               </Button>
             </form>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Bell, Package, ShoppingCart, Store } from "lucide-react"
+import { Bell, Package, ShoppingCart, Store, X } from "lucide-react"
 
 interface Notification {
   id: string
@@ -21,6 +21,7 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const { user, token } = useAuth()
 
   useEffect(() => {
@@ -96,14 +97,13 @@ export function NotificationBell() {
   if (!user) return null
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button variant="ghost" size="sm" className="relative p-2 hover:bg-cyan-50 rounded-full transition-all duration-200">
+          <Bell className={`h-5 w-5 transition-all duration-200 ${unreadCount > 0 ? 'text-[#00B4D8] animate-pulse' : 'text-gray-600 hover:text-[#00B4D8]'}`} />
           {unreadCount > 0 && (
             <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 hover:bg-red-600 animate-bounce shadow-lg"
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
@@ -115,11 +115,16 @@ export function NotificationBell() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Notifications</CardTitle>
-              {unreadCount > 0 && (
-                <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs">
-                  Mark all read
+              <div className="flex items-center space-x-2">
+                {unreadCount > 0 && (
+                  <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs">
+                    Mark all read
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setIsOpen(false)}>
+                  <X className="h-4 w-4 text-gray-400" />
                 </Button>
-              )}
+              </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
@@ -132,7 +137,7 @@ export function NotificationBell() {
                 <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">🎉</span>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Welcome to Kshop!</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Welcome to LocalCart!</h3>
                 <p className="text-gray-600 text-sm mb-4">
                   Hi {user?.name || 'there'}! We're excited to have you here. Start exploring amazing products and enjoy shopping!
                 </p>
@@ -150,7 +155,7 @@ export function NotificationBell() {
                       <span className="text-white text-sm">🎉</span>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">Welcome to Kshop!</p>
+                      <p className="text-sm font-medium text-gray-900">Welcome to LocalCart!</p>
                       <p className="text-xs text-gray-600">Start exploring amazing products</p>
                     </div>
                   </div>
