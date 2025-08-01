@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import connectToDatabase from "@/lib/db"
+import twilio from "twilio"
 
 // Simple OTP generation function
 function generateOTP(): string {
@@ -83,10 +84,27 @@ export async function POST(request: NextRequest) {
 
     console.log("Generated OTP:", otp, "for phone:", phone)
 
-    // In production, send OTP via SMS service (Twilio, AWS SNS, etc.)
-    if (process.env.NODE_ENV === "production") {
-      // TODO: Implement SMS sending logic
-      console.log(`OTP for ${phone}: ${otp}`)
+    // Send OTP via SMS service
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+      try {
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+        
+        await client.messages.create({
+          body: `Your LocalCart verification code is: ${otp}. Valid for 10 minutes. Do not share this code.`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: `+91${phone}`
+        })
+        
+        console.log(`SMS sent successfully to +91${phone}`)
+      } catch (smsError) {
+        console.error('SMS sending failed:', smsError)
+        // Return error if SMS fails in production
+        if (process.env.NODE_ENV === "production") {
+          return NextResponse.json({ error: "Failed to send OTP. Please try again." }, { status: 500 })
+        }
+      }
+    } else {
+      console.log(`Development mode - OTP for ${phone}: ${otp}`)
     }
 
     return NextResponse.json({
