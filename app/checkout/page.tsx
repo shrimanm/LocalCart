@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, CreditCard, MapPin } from "lucide-react"
 import Image from "next/image"
 import { formatPrice } from "@/lib/utils"
+import { Notification, useNotification } from "@/components/ui/notification"
 
 interface CartItem {
   id: string
@@ -52,6 +53,7 @@ export default function CheckoutPage() {
   const [placing, setPlacing] = useState(false)
   const { user, token } = useAuth()
   const router = useRouter()
+  const { notification, showNotification, hideNotification } = useNotification()
 
   useEffect(() => {
     if (!user || !token) {
@@ -102,7 +104,7 @@ export default function CheckoutPage() {
       !address.state ||
       !address.pincode
     ) {
-      alert("Please fill in all required address fields")
+      showNotification("Please fill in all required address fields", "error")
       return
     }
 
@@ -130,14 +132,14 @@ export default function CheckoutPage() {
 
       if (response.ok) {
         const data = await response.json()
-        alert("Order placed successfully!")
-        router.push(`/order/${data.orderId}`)
+        showNotification("Order placed successfully!", "success")
+        setTimeout(() => router.push(`/order/${data.orderId}`), 1500)
       } else {
         const error = await response.json()
-        alert(error.error || "Failed to place order")
+        showNotification(error.error || "Failed to place order", "error")
       }
     } catch (error) {
-      alert("Network error. Please try again.")
+      showNotification("Network error. Please try again.", "error")
     } finally {
       setPlacing(false)
     }
@@ -167,6 +169,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={hideNotification}
+      />
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

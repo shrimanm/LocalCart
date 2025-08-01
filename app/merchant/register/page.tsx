@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Store, ArrowLeft } from "lucide-react"
+import { Notification, useNotification } from "@/components/ui/notification"
 
 export default function MerchantRegisterPage() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ export default function MerchantRegisterPage() {
   const [error, setError] = useState("")
   const { user, token } = useAuth()
   const router = useRouter()
+  const { notification, showNotification, hideNotification } = useNotification()
 
   useEffect(() => {
     if (!user || !token) {
@@ -61,9 +63,11 @@ export default function MerchantRegisterPage() {
       const data = await response.json()
 
       if (response.ok) {
-        alert("Shop registered successfully! Please refresh to see changes.")
+        showNotification("Shop registered successfully! Redirecting...", "success")
         // Force refresh to update user context
-        window.location.href = "/profile"
+        setTimeout(() => {
+          window.location.href = "/profile"
+        }, 2000)
       } else {
         setError(data.error || "Failed to register shop")
       }
@@ -78,6 +82,12 @@ export default function MerchantRegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 p-4">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={hideNotification}
+      />
       <div className="max-w-2xl mx-auto">
         <Button variant="ghost" onClick={() => router.push("/profile")} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Shield, Users, Store, Package, TrendingUp, Search, CheckCircle, XCircle, Trash2 } from "lucide-react"
+import { Notification, useNotification } from "@/components/ui/notification"
 
 interface User {
   id: string
@@ -47,6 +48,7 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true)
   const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
+  const { notification, showNotification, hideNotification } = useNotification()
 
   useEffect(() => {
     if (authLoading) return
@@ -112,10 +114,10 @@ export default function AdminPanel() {
 
       if (response.ok) {
         setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)))
-        alert("User role updated successfully")
+        showNotification("User role updated successfully", "success")
       }
     } catch (error) {
-      alert("Failed to update user role")
+      showNotification("Failed to update user role", "error")
     }
   }
 
@@ -138,10 +140,10 @@ export default function AdminPanel() {
           totalUsers: prev.totalUsers - 1,
           totalMerchants: deletedUser?.role === 'merchant' ? prev.totalMerchants - 1 : prev.totalMerchants
         }))
-        alert("User deleted successfully")
+        showNotification("User deleted successfully", "success")
       }
     } catch (error) {
-      alert("Failed to delete user")
+      showNotification("Failed to delete user", "error")
     }
   }
 
@@ -158,10 +160,10 @@ export default function AdminPanel() {
 
       if (response.ok) {
         setShops(shops.map((s) => (s.id === shopId ? { ...s, isVerified } : s)))
-        alert(`Shop ${isVerified ? "verified" : "unverified"} successfully`)
+        showNotification(`Shop ${isVerified ? "verified" : "unverified"} successfully`, "success")
       }
     } catch (error) {
-      alert("Failed to update shop verification")
+      showNotification("Failed to update shop verification", "error")
     }
   }
 
@@ -184,10 +186,10 @@ export default function AdminPanel() {
           totalShops: prev.totalShops - 1,
           verifiedShops: deletedShop?.isVerified ? prev.verifiedShops - 1 : prev.verifiedShops
         }))
-        alert("Shop deleted successfully")
+        showNotification("Shop deleted successfully", "success")
       }
     } catch (error) {
-      alert("Failed to delete shop")
+      showNotification("Failed to delete shop", "error")
     }
   }
 
@@ -210,6 +212,12 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={hideNotification}
+      />
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:py-0 sm:h-16 space-y-3 sm:space-y-0">

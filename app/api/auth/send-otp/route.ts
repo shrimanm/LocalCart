@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
 import connectToDatabase from "@/lib/db"
-import twilio from "twilio"
 
 // Simple OTP generation function
 function generateOTP(): string {
@@ -62,8 +61,8 @@ export async function POST(request: NextRequest) {
     const db = await connectToDatabase()
     console.log("MongoDB connected successfully")
 
-    // Generate OTP (in production, use a proper OTP service)
-    const otp = process.env.NODE_ENV === "development" ? "123456" : generateOTP()
+    // Generate OTP - using 123456 for now (will implement SMS later)
+    const otp = "123456"
 
     // Store OTP in database with expiration
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
@@ -84,34 +83,13 @@ export async function POST(request: NextRequest) {
 
     console.log("Generated OTP:", otp, "for phone:", phone)
 
-    // Send OTP via SMS service
-    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-      try {
-        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-        
-        await client.messages.create({
-          body: `Your LocalCart verification code is: ${otp}. Valid for 10 minutes. Do not share this code.`,
-          from: process.env.TWILIO_PHONE_NUMBER,
-          to: `+91${phone}`
-        })
-        
-        console.log(`SMS sent successfully to +91${phone}`)
-      } catch (smsError) {
-        console.error('SMS sending failed:', smsError)
-        // Return error if SMS fails in production
-        if (process.env.NODE_ENV === "production") {
-          return NextResponse.json({ error: "Failed to send OTP. Please try again." }, { status: 500 })
-        }
-      }
-    } else {
-      console.log(`Development mode - OTP for ${phone}: ${otp}`)
-    }
+    // Simple OTP system for development
+    console.log(`Generated OTP for ${phone}: ${otp}`)
 
     return NextResponse.json({
       success: true,
       message: "OTP sent successfully",
-      // Only include OTP in development
-      ...(process.env.NODE_ENV === "development" && { otp }),
+      otp: otp // Always show OTP for now
     })
   } catch (dbError) {
     console.error("Database operation error:", dbError)

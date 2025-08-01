@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Store, Package, TrendingUp, Users, Plus, Edit, Eye, Trash2 } from "lucide-react"
 import RouteGuard from "@/components/auth/route-guard"
 import { formatPrice } from "@/lib/utils"
+import { Notification, useNotification } from "@/components/ui/notification"
 
 interface Shop {
   id: string
@@ -51,6 +52,7 @@ function MerchantDashboardContent() {
   const [loading, setLoading] = useState(true)
   const { user, token, loading: authLoading } = useAuth()
   const router = useRouter()
+  const { notification, showNotification, hideNotification } = useNotification()
 
   useEffect(() => {
     if (authLoading) return
@@ -90,11 +92,11 @@ function MerchantDashboardContent() {
           activeProducts: deletedProduct?.isActive ? prev.activeProducts - 1 : prev.activeProducts
         }))
       } else {
-        alert('Failed to delete product')
+        showNotification('Failed to delete product', 'error')
       }
     } catch (error) {
       console.error('Error deleting product:', error)
-      alert('Error deleting product')
+      showNotification('Error deleting product', 'error')
     }
   }
 
@@ -156,6 +158,12 @@ function MerchantDashboardContent() {
 
   return (
     <div className="min-h-screen bg-cyan-50">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={hideNotification}
+      />
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:py-0 sm:h-16">

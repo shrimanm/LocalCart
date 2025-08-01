@@ -16,6 +16,8 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [resendTimer, setResendTimer] = useState(0)
+  const [showOtpNotification, setShowOtpNotification] = useState(false)
+  const [otpValue, setOtpValue] = useState("")
   const { login } = useAuth()
 
   const startResendTimer = () => {
@@ -54,6 +56,12 @@ export default function LoginForm() {
       if (response.ok) {
         setStep("otp")
         startResendTimer()
+        // Show OTP notification
+        if (data.otp) {
+          setOtpValue(data.otp)
+          setShowOtpNotification(true)
+          setTimeout(() => setShowOtpNotification(false), 10000) // Hide after 10 seconds
+        }
       } else {
         setError(data.error || "Failed to send OTP")
       }
@@ -90,7 +98,6 @@ export default function LoginForm() {
         setError(data.error || "Invalid OTP")
       }
     } catch (error) {
-
       setError("Network error. Please try again.")
     } finally {
       setLoading(false)
@@ -110,11 +117,18 @@ export default function LoginForm() {
         body: JSON.stringify({ phone }),
       })
 
+      const data = await response.json()
+
       if (response.ok) {
         startResendTimer()
         setError("")
+        // Show OTP notification
+        if (data.otp) {
+          setOtpValue(data.otp)
+          setShowOtpNotification(true)
+          setTimeout(() => setShowOtpNotification(false), 10000) // Hide after 10 seconds
+        }
       } else {
-        const data = await response.json()
         setError(data.error || "Failed to resend OTP")
       }
     } catch (error) {
@@ -181,6 +195,28 @@ export default function LoginForm() {
 
   const renderOTPStep = () => (
     <form onSubmit={handleVerifyOTP} className="space-y-6">
+      {showOtpNotification && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <MessageSquare className="h-5 w-5 text-green-600 mr-2" />
+              <div>
+                <p className="text-green-800 font-medium">Your OTP Code</p>
+                <p className="text-green-700 text-lg font-mono">{otpValue}</p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowOtpNotification(false)}
+              className="text-green-600 hover:text-green-800"
+            >
+              ×
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="flex items-center mb-4">
         <Button 
           type="button" 

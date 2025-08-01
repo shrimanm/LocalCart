@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Plus, Edit, Trash2, MapPin } from "lucide-react"
+import { Notification, useNotification } from "@/components/ui/notification"
 
 interface Address {
   id: string
@@ -46,6 +47,7 @@ export default function AddressManagement() {
   })
   const { user, token } = useAuth()
   const router = useRouter()
+  const { notification, showNotification, hideNotification } = useNotification()
 
   useEffect(() => {
     if (!user || !token) {
@@ -91,13 +93,13 @@ export default function AddressManagement() {
         await fetchAddresses()
         setIsDialogOpen(false)
         resetForm()
-        alert(editingAddress ? "Address updated successfully" : "Address added successfully")
+        showNotification(editingAddress ? "Address updated successfully" : "Address added successfully", "success")
       } else {
         const error = await response.json()
-        alert(error.error || "Failed to save address")
+        showNotification(error.error || "Failed to save address", "error")
       }
     } catch (error) {
-      alert("Failed to save address")
+      showNotification("Failed to save address", "error")
     }
   }
 
@@ -128,12 +130,12 @@ export default function AddressManagement() {
 
       if (response.ok) {
         await fetchAddresses()
-        alert("Address deleted successfully")
+        showNotification("Address deleted successfully", "success")
       } else {
-        alert("Failed to delete address")
+        showNotification("Failed to delete address", "error")
       }
     } catch (error) {
-      alert("Failed to delete address")
+      showNotification("Failed to delete address", "error")
     }
   }
 
@@ -146,12 +148,12 @@ export default function AddressManagement() {
 
       if (response.ok) {
         await fetchAddresses()
-        alert("Default address updated")
+        showNotification("Default address updated", "success")
       } else {
-        alert("Failed to update default address")
+        showNotification("Failed to update default address", "error")
       }
     } catch (error) {
-      alert("Failed to update default address")
+      showNotification("Failed to update default address", "error")
     }
   }
 
@@ -185,6 +187,12 @@ export default function AddressManagement() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        show={notification.show}
+        onClose={hideNotification}
+      />
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
