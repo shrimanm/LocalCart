@@ -88,7 +88,7 @@ export default function WishlistPage() {
       })
       if (response.ok) {
         const data = await response.json()
-        const bookedIds = new Set(data.items.map((item: any) => item.productId))
+        const bookedIds = new Set<string>(data.items.map((item: any) => item.productId))
         setBookedItems(bookedIds)
       }
     } catch (error) {

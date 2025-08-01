@@ -39,9 +39,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-4">
-              <img src="/logo.png" alt="Kshop Logo" className="h-12 w-12 mr-4" />
+              <img src="/logo.png" alt="LocalCart Logo" className="h-16 w-16 mr-4" />
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-                Welcome to <span className="text-red-700 font-black">Kshop</span>
+                Welcome to <span className="text-red-700 font-black">LocalCart</span>
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -68,7 +68,7 @@ export default function HomePage() {
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Kshop?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose LocalCart?</h2>
             <p className="text-gray-600">Experience the best of fashion shopping</p>
           </div>
 

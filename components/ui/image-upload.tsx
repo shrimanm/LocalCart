@@ -27,7 +27,7 @@ export default function ImageUpload({ value = [], onChange, maxFiles = 5, disabl
         return
       }
       
-      const img = new Image()
+      const img = document.createElement('img')
       
       img.onload = () => {
         try {

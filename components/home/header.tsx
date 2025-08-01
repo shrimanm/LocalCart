@@ -107,8 +107,8 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/home" className="flex-shrink-0 flex items-center space-x-2">
-            <img src="/logo.png" alt="Kshop Logo" className="h-12 w-12" />
-            <h1 className="text-2xl font-black text-red-700">Kshop</h1>
+            <img src="/logo.png" alt="LocalCart Logo" className="h-12 w-12" />
+            <h1 className="text-2xl font-black text-red-700">LocalCart</h1>
           </Link>
 
           {/* Search Bar - Hidden on mobile */}

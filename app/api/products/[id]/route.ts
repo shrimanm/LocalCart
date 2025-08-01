@@ -91,7 +91,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       images: productData.images,
       sizes: productData.sizes,
       variants: productData.variants,
-      variantType: productData.variantType,
       colors: productData.colors,
       stock: productData.stock,
       isActive: productData.isActive,

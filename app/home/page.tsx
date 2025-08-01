@@ -93,7 +93,7 @@ function HomePageContent() {
       const data = await response.json()
 
       if (response.ok) {
-        const wishlistedIds = new Set(data.items.map((item: any) => item.productId))
+        const wishlistedIds = new Set<string>(data.items.map((item: any) => item.productId))
         setWishlistedItems(wishlistedIds)
       }
     } catch (error) {

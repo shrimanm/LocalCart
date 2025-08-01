@@ -40,12 +40,12 @@ export async function POST(request: NextRequest) {
     const rateLimitKey = `otp-${clientIP}-${phone}`
     
     // Allow max 3 OTP requests per phone per 15 minutes
-    if (typeof global.otpRateLimit === 'undefined') {
-      global.otpRateLimit = new Map()
+    if (typeof (global as any).otpRateLimit === 'undefined') {
+      (global as any).otpRateLimit = new Map()
     }
     
     const now = Date.now()
-    const existing = global.otpRateLimit.get(rateLimitKey)
+    const existing = (global as any).otpRateLimit.get(rateLimitKey)
     
     if (existing && existing.count >= 3 && (now - existing.timestamp) < 15 * 60 * 1000) {
       return NextResponse.json({ error: "Too many OTP requests. Please try again later." }, { status: 429 })
@@ -53,9 +53,9 @@ export async function POST(request: NextRequest) {
     
     // Update rate limit
     if (!existing || (now - existing.timestamp) >= 15 * 60 * 1000) {
-      global.otpRateLimit.set(rateLimitKey, { count: 1, timestamp: now })
+      (global as any).otpRateLimit.set(rateLimitKey, { count: 1, timestamp: now })
     } else {
-      global.otpRateLimit.set(rateLimitKey, { count: existing.count + 1, timestamp: existing.timestamp })
+      (global as any).otpRateLimit.set(rateLimitKey, { count: existing.count + 1, timestamp: existing.timestamp })
     }
 
     const db = await connectToDatabase()

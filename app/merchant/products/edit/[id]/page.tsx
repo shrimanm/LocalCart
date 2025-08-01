@@ -290,7 +290,10 @@ export default function EditProductPage() {
                 <CardTitle>Product Images</CardTitle>
               </CardHeader>
               <CardContent>
-                <ImageUpload onUpload={handleImageUpload} />
+                <ImageUpload 
+                  value={product.images} 
+                  onChange={(urls) => setProduct({ ...product, images: urls })} 
+                />
                 
                 {product.images.length > 0 && (
                   <div className="grid grid-cols-2 gap-4 mt-4">

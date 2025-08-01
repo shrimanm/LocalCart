@@ -73,14 +73,16 @@ export async function GET(request: NextRequest) {
 
     // Transform cart items
     const transformedItems = cartItems.map((item) => ({
-      ...item,
       id: item._id.toString(),
+      quantity: item.quantity,
+      size: item.size,
+      color: item.color,
+      createdAt: item.createdAt,
       product: {
         ...item.product,
         id: item.product._id.toString(),
         _id: undefined,
       },
-      _id: undefined,
     }))
 
     // Calculate totals

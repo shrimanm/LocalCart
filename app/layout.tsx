@@ -8,9 +8,14 @@ import { AuthProvider } from "./providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Myntra Clone - Fashion Shopping",
+  title: "LocalCart",
   description: "Your one-stop destination for fashion and lifestyle",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 export default function RootLayout({
