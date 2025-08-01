@@ -38,9 +38,9 @@ export default function HomePage() {
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center mb-4">
-              <img src="/logo.png" alt="LocalCart Logo" className="h-16 w-16 mr-4" />
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
+            <div className="flex flex-col items-center justify-center mb-4">
+              <img src="/logo.png" alt="LocalCart Logo" className="h-16 w-16 mb-4 rounded-md" />
+              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 text-center">
                 Welcome to <span className="text-red-700 font-black">LocalCart</span>
               </h1>
             </div>

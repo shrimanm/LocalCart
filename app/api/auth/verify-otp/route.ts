@@ -87,6 +87,10 @@ export async function POST(request: NextRequest) {
       phone: user.phone,
       name: user.name,
       email: user.email,
+      age: user.age,
+      gender: user.gender,
+      city: user.city,
+      interests: user.interests,
       role: user.role,
       isVerified: user.isVerified,
     }

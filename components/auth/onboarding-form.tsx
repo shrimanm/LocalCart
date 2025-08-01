@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/app/providers"
 import { useRouter } from "next/navigation"
 import { User, Mail, Calendar, Users, MapPin, Heart, Bell, ArrowLeft } from "lucide-react"
+import { useBackButton } from "@/hooks/useBackButton"
 
 const interests = [
   "Men's Fashion",
@@ -67,6 +68,20 @@ export default function OnboardingForm() {
     logout()
     router.push("/")
   }
+
+  // Handle back button behavior
+  const handleCustomBack = () => {
+    if (step > 1) {
+      handleBack()
+    } else {
+      handleBackToLogin()
+    }
+  }
+
+  const { goBack } = useBackButton({
+    onBack: handleCustomBack,
+    preventExit: true
+  })
 
   const handleInterestToggle = (interest: string) => {
     setFormData((prev) => ({

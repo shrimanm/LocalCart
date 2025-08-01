@@ -16,7 +16,7 @@ export default function OnboardingPage() {
     }
 
     // If user already has profile data, redirect to home
-    if (user.name && user.age) {
+    if (user.name) {
       router.push("/home")
       return
     }

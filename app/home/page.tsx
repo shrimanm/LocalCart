@@ -18,6 +18,7 @@ import ProductCard from "@/components/products/product-card"
 import Header from "@/components/home/header"
 import BottomNav from "@/components/ui/bottom-nav"
 import RouteGuard from "@/components/auth/route-guard"
+import { useBackButton } from "@/hooks/useBackButton"
 import type { Product } from "@/lib/types"
 
 function HomePageContent() {
@@ -42,6 +43,13 @@ function HomePageContent() {
     total: 0,
     pages: 0,
   })
+  const [profileChecking, setProfileChecking] = useState(true)
+
+  // Prevent app exit on back button
+  const { goBack } = useBackButton({
+    preventExit: true,
+    fallbackUrl: "/home"
+  })
 
   useEffect(() => {
     if (!user) {
@@ -49,12 +57,14 @@ function HomePageContent() {
       return
     }
 
-    // Check if user needs to complete profile
-    if (!user.name || !user.age) {
+    // Check if user needs to complete profile (only for truly new users)
+    if (!user.name) {
       router.push("/onboarding")
       return
     }
 
+    // Profile is complete, allow home page to load
+    setProfileChecking(false)
     fetchProducts()
     fetchWishlist()
   }, [user, selectedCategory, sortBy, searchQuery, priceRange, pagination.page, router])
@@ -152,6 +162,15 @@ function HomePageContent() {
     setPriceRange([0, 10000])
 
     setPagination((prev) => ({ ...prev, page: 1 }))
+  }
+
+  // Show loading while checking profile completion
+  if (profileChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cyan-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00B4D8]"></div>
+      </div>
+    )
   }
 
   return (

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/app/providers"
 import { Phone, MessageSquare, Shield, ArrowRight, ArrowLeft } from "lucide-react"
+import { useBackButton } from "@/hooks/useBackButton"
 
 export default function LoginForm() {
   const [phone, setPhone] = useState("")
@@ -19,6 +20,21 @@ export default function LoginForm() {
   const [showOtpNotification, setShowOtpNotification] = useState(false)
   const [otpValue, setOtpValue] = useState("")
   const { login } = useAuth()
+
+  // Handle back button behavior
+  const handleCustomBack = () => {
+    if (step === "otp") {
+      setStep("phone")
+      setOtp("")
+      setError("")
+      setShowOtpNotification(false)
+    }
+  }
+
+  const { goBack } = useBackButton({
+    onBack: step === "otp" ? handleCustomBack : undefined,
+    preventExit: true
+  })
 
   const startResendTimer = () => {
     setResendTimer(30)
@@ -95,8 +111,8 @@ export default function LoginForm() {
       if (response.ok) {
         login(data.token, data.user)
         
-        // Check if user needs to complete profile
-        if (!data.user.name || !data.user.age) {
+        // Check if user needs to complete profile (only for truly new users)
+        if (!data.user.name) {
           window.location.href = "/onboarding"
         }
       } else {
@@ -146,7 +162,7 @@ export default function LoginForm() {
   const renderPhoneStep = () => (
     <form onSubmit={handleSendOTP} className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Phone className="h-8 w-8 text-[#00B4D8]" />
         </div>
         <h3 className="text-xl font-semibold">Enter Your Mobile Number</h3>
@@ -226,7 +242,7 @@ export default function LoginForm() {
         <Button 
           type="button" 
           variant="ghost" 
-          onClick={() => setStep("phone")} 
+          onClick={handleCustomBack} 
           className="p-2 hover:bg-gray-100"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -235,7 +251,7 @@ export default function LoginForm() {
       </div>
       
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <MessageSquare className="h-8 w-8 text-[#00B4D8]" />
         </div>
         <h3 className="text-xl font-semibold">Verify OTP</h3>
@@ -296,7 +312,7 @@ export default function LoginForm() {
     <Card className="w-full border-0 shadow-none">
       <CardHeader className="text-center pb-2">
         <div className="flex items-center justify-center space-x-2 mb-2">
-          <img src="/logo.png" alt="Kshop Logo" className="h-6 w-6" />
+          <img src="/logo.png" alt="Kshop Logo" className="h-12 w-12 rounded-md" />
           <CardTitle className="text-2xl font-black text-red-700">
             {step === "phone" ? "Login or Signup" : "Verify OTP"}
           </CardTitle>
