@@ -1,24 +1,18 @@
 "use client"
 
 import { useRouter, usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, memo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Home, Heart, Calendar, User } from "lucide-react"
 import { useAuth } from "@/app/providers"
 
-export default function BottomNav() {
+function BottomNav() {
   const router = useRouter()
   const pathname = usePathname()
   const [wishlistCount, setWishlistCount] = useState(0)
   const { token } = useAuth()
 
-  useEffect(() => {
-    if (token) {
-      fetchWishlistCount()
-    }
-  }, [token])
-
-  const fetchWishlistCount = async () => {
+  const fetchWishlistCount = useCallback(async () => {
     try {
       const response = await fetch("/api/wishlist", {
         headers: { Authorization: `Bearer ${token}` },
@@ -31,7 +25,13 @@ export default function BottomNav() {
     } catch (error) {
       console.error("Error fetching wishlist count:", error)
     }
-  }
+  }, [token])
+
+  useEffect(() => {
+    if (token) {
+      fetchWishlistCount()
+    }
+  }, [token, fetchWishlistCount])
 
   // Update count when wishlist changes
   useEffect(() => {
@@ -43,14 +43,14 @@ export default function BottomNav() {
 
     window.addEventListener('wishlist-updated', handleWishlistUpdate)
     return () => window.removeEventListener('wishlist-updated', handleWishlistUpdate)
-  }, [token])
+  }, [token, fetchWishlistCount])
 
-  const navItems = [
+  const navItems = useMemo(() => [
     { icon: Home, label: "Home", path: "/home" },
     { icon: Heart, label: "Wishlist", path: "/wishlist" },
     { icon: Calendar, label: "Booked", path: "/booked" },
     { icon: User, label: "Profile", path: "/profile" },
-  ]
+  ], [])
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50">
@@ -78,3 +78,5 @@ export default function BottomNav() {
     </div>
   )
 }
+
+export default memo(BottomNav)

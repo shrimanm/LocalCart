@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Page transition styles */
+.page-transition {
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    transition: none;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Modern Ecommerce Typography */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
@@ -163,6 +194,8 @@ body {
     --popover-foreground: 0 0% 3.9%;
     --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%;
+    --ajio-primary: 0 0% 9%;
+    --ajio-primary-hover: 0 0% 20%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -232,4 +265,43 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* AJIO Aesthetic Button Styles */
+.btn-ajio {
+  @apply bg-gray-900 hover:bg-gray-800 text-white font-medium px-4 py-2 rounded transition-colors duration-200;
+}
+
+.btn-ajio-outline {
+  @apply border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-medium px-4 py-2 rounded transition-colors duration-200;
+}
+
+.text-ajio-primary {
+  @apply text-gray-900;
+}
+
+.border-ajio-primary {
+  @apply border-gray-900;
+}
+
+.bg-ajio-primary {
+  @apply bg-gray-900;
+}
+
+.bg-ajio-primary-hover {
+  @apply hover:bg-gray-800;
+}
+
+/* Override default button styles */
+.btn:not(.btn-custom) {
+  @apply btn-ajio;
+}
+
+/* Checkbox and form element colors */
+input[type="checkbox"]:checked {
+  @apply bg-gray-900 border-gray-900;
+}
+
+input:focus {
+  @apply border-gray-900 ring-gray-900;
 }

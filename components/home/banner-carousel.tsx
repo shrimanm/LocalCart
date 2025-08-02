@@ -33,6 +33,46 @@ const banners = [
   },
   {
     id: 4,
+    image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=1200&h=600&fit=crop&crop=center",
+    title: "Beauty & Care",
+    subtitle: "Premium cosmetics & skincare",
+    category: "beauty",
+    gradient: "from-rose-400/70 to-pink-600/70"
+  },
+  {
+    id: 5,
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=600&fit=crop&crop=center",
+    title: "Home & Living",
+    subtitle: "Transform your space with style",
+    category: "home",
+    gradient: "from-amber-400/70 to-orange-600/70"
+  },
+  {
+    id: 6,
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&h=600&fit=crop&crop=center",
+    title: "Footwear",
+    subtitle: "Step up your shoe game",
+    category: "footwear",
+    gradient: "from-slate-600/70 to-gray-800/70"
+  },
+  {
+    id: 7,
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&h=600&fit=crop&crop=center",
+    title: "Accessories",
+    subtitle: "Complete your look with style",
+    category: "accessories",
+    gradient: "from-purple-500/70 to-indigo-600/70"
+  },
+  {
+    id: 8,
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop&crop=center",
+    title: "Sports & Fitness",
+    subtitle: "Gear up for your active lifestyle",
+    category: "sports",
+    gradient: "from-blue-500/70 to-cyan-600/70"
+  },
+  {
+    id: 9,
     image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1200&h=600&fit=crop&crop=center",
     title: "Electronics",
     subtitle: "Latest gadgets & tech accessories",
@@ -129,7 +169,7 @@ export default function BannerCarousel() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
+            className={`w-2 h-2 rounded-full transition-all duration-200 ${
               index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
             }`}
           />

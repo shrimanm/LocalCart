@@ -8,6 +8,9 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category")
     const search = searchParams.get("search")
     const brand = searchParams.get("brand")
+    const brands = searchParams.get("brands")
+    const shops = searchParams.get("shops")
+    const categories = searchParams.get("categories")
     const minPrice = searchParams.get("minPrice")
     const maxPrice = searchParams.get("maxPrice")
     const sort = searchParams.get("sort") || "createdAt"
@@ -52,6 +55,38 @@ export async function GET(request: NextRequest) {
       filter.brand = new RegExp(brand, "i")
     }
 
+    if (brands) {
+      const brandList = brands.split(',')
+      filter.brand = { $in: brandList.map(b => new RegExp(b, "i")) }
+    }
+
+    // Handle shop filtering by getting shop IDs first
+    if (shops) {
+      const shopList = shops.split(',')
+      console.log('Shop filtering for:', shopList)
+      
+      // Get shop IDs that match the shop names
+      const matchingShops = await db.collection("shops")
+        .find({ name: { $in: shopList.map(s => new RegExp(s, "i")) } })
+        .toArray()
+      
+      const shopIds = matchingShops.map(shop => shop._id)
+      console.log('Found shop IDs:', shopIds)
+      
+      if (shopIds.length > 0) {
+        filter.shopId = { $in: shopIds }
+      } else {
+        // No matching shops found, return empty results
+        filter._id = { $in: [] }
+      }
+    }
+
+    if (categories) {
+      const categoryList = categories.split(',')
+      console.log('Category filter applied:', categoryList)
+      filter.category = { $in: categoryList }
+    }
+
     if (minPrice || maxPrice) {
       filter.price = {}
       if (minPrice) filter.price.$gte = Number.parseFloat(minPrice)
@@ -73,11 +108,11 @@ export async function GET(request: NextRequest) {
       sortQuery.createdAt = -1 // Newest First (default)
     }
 
-    // Get products with pagination
+    // Get products with pagination (simplified approach)
     const products = await db.collection("products")
       .find(filter)
       .sort(sortQuery)
-      .collation({ locale: "en", strength: 2 }) // Case-insensitive sorting
+      .collation({ locale: "en", strength: 2 })
       .skip(skip)
       .limit(limit)
       .toArray()

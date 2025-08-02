@@ -172,20 +172,20 @@ export default function ImageUpload({ value = [], onChange, maxFiles = 5, disabl
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                isDragActive ? "border-[#00B4D8] bg-cyan-50" : "border-gray-300 hover:border-[#00B4D8]"
+                isDragActive ? "border-gray-900 bg-gray-50" : "border-gray-300 hover:border-gray-900"
               } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <input {...getInputProps()} />
 
               <div className="flex flex-col items-center space-y-4">
                 {uploading ? (
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#00B4D8]" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-gray-900" />
                 ) : (
-                  <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                     {isDragActive ? (
-                      <Upload className="h-6 w-6 text-[#00B4D8]" />
+                      <Upload className="h-6 w-6 text-gray-900" />
                     ) : (
-                      <ImageIcon className="h-6 w-6 text-[#00B4D8]" />
+                      <ImageIcon className="h-6 w-6 text-gray-900" />
                     )}
                   </div>
                 )}

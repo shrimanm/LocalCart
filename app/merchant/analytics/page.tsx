@@ -104,7 +104,7 @@ export default function MerchantAnalytics() {
   if (!user || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -160,7 +160,7 @@ export default function MerchantAnalytics() {
                         <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                         <p className="text-2xl font-bold">{formatPrice(analytics.sales.metrics.totalRevenue)}</p>
                       </div>
-                      <DollarSign className="h-8 w-8 text-[#00B4D8]" />
+                      <DollarSign className="h-8 w-8 text-gray-900" />
                     </div>
                     <div className="mt-2">{formatGrowth(analytics.sales.comparison.revenueGrowth)}</div>
                   </CardContent>
@@ -173,7 +173,7 @@ export default function MerchantAnalytics() {
                         <p className="text-sm font-medium text-gray-600">Total Orders</p>
                         <p className="text-2xl font-bold">{analytics.sales.metrics.totalOrders}</p>
                       </div>
-                      <ShoppingCart className="h-8 w-8 text-[#00B4D8]" />
+                      <ShoppingCart className="h-8 w-8 text-gray-900" />
                     </div>
                     <div className="mt-2">{formatGrowth(analytics.sales.comparison.ordersGrowth)}</div>
                   </CardContent>
@@ -186,7 +186,7 @@ export default function MerchantAnalytics() {
                         <p className="text-sm font-medium text-gray-600">Items Sold</p>
                         <p className="text-2xl font-bold">{analytics.sales.metrics.totalItems}</p>
                       </div>
-                      <Package className="h-8 w-8 text-[#00B4D8]" />
+                      <Package className="h-8 w-8 text-gray-900" />
                     </div>
                   </CardContent>
                 </Card>
@@ -198,7 +198,7 @@ export default function MerchantAnalytics() {
                         <p className="text-sm font-medium text-gray-600">Avg Order Value</p>
                         <p className="text-2xl font-bold">{formatPrice(analytics.sales.metrics.avgOrderValue)}</p>
                       </div>
-                      <TrendingUp className="h-8 w-8 text-[#00B4D8]" />
+                      <TrendingUp className="h-8 w-8 text-gray-900" />
                     </div>
                   </CardContent>
                 </Card>
@@ -328,8 +328,8 @@ export default function MerchantAnalytics() {
                       {analytics.products.topProducts.map((product, index) => (
                         <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center space-x-4">
-                            <div className="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-bold text-[#00B4D8]">#{index + 1}</span>
+                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
                             </div>
                             <div>
                               <h3 className="font-medium">{product.name}</h3>
@@ -402,8 +402,8 @@ export default function MerchantAnalytics() {
                       {analytics.customers.topCustomers.map((customer, index) => (
                         <div key={customer.id} className="flex items-center justify-between p-4 border rounded-lg">
                           <div className="flex items-center space-x-4">
-                            <div className="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-bold text-[#00B4D8]">#{index + 1}</span>
+                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-bold text-gray-900">#{index + 1}</span>
                             </div>
                             <div>
                               <h3 className="font-medium">{customer.user.name || "Anonymous"}</h3>

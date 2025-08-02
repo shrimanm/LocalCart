@@ -33,8 +33,8 @@ export default function CategoryTabs({ selectedCategory, onCategoryChange, produ
               onClick={() => onCategoryChange(category.id)}
               className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-200 border-2 ${
                 selectedCategory === category.id
-                  ? "border-red-800 text-red-800 bg-red-50 hover:bg-red-100 shadow-md"
-                  : "border-transparent text-gray-600 hover:text-[#0077B6] hover:bg-cyan-50"
+                  ? "border-gray-900 text-gray-900 bg-gray-100 hover:bg-gray-200 shadow-md"
+                  : "border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               <span className="text-lg">{category.icon}</span>

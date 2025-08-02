@@ -145,7 +145,7 @@ export default function ProfilePage() {
   if (authLoading || (!user && authLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -254,7 +254,7 @@ export default function ProfilePage() {
                     <Button variant="outline" onClick={() => setEditing(false)}>
                       Cancel
                     </Button>
-                    <Button onClick={handleSave} disabled={loading} className="bg-[#00B4D8] hover:bg-[#0096C7]">
+                    <Button onClick={handleSave} disabled={loading} className="bg-gray-900 hover:bg-gray-800 text-white">
                       {loading ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                   <>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-[#00B4D8] hover:text-[#0096C7] hover:bg-cyan-50"
+                      className="w-full justify-start bg-gradient-to-r from-gray-900 to-gray-700 text-white hover:from-gray-800 hover:to-gray-600 font-bold shadow-lg border-2 border-gray-900"
                       onClick={() => router.push("/admin")}
                     >
                       <Shield className="h-4 w-4 mr-2" />
@@ -329,7 +329,7 @@ export default function ProfilePage() {
                     </Button>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-[#00B4D8] hover:text-[#0096C7] hover:bg-cyan-50"
+                      className="w-full justify-start bg-gradient-to-r from-gray-900 to-gray-700 text-white hover:from-gray-800 hover:to-gray-600 font-bold shadow-lg border-2 border-gray-900"
                       onClick={() => router.push("/merchant")}
                     >
                       <Store className="h-4 w-4 mr-2" />
@@ -340,7 +340,7 @@ export default function ProfilePage() {
                 {user.role === "merchant" && (
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-[#00B4D8] hover:text-[#0096C7] hover:bg-cyan-50"
+                    className="w-full justify-start bg-gradient-to-r from-gray-900 to-gray-700 text-white hover:from-gray-800 hover:to-gray-600 font-bold shadow-lg border-2 border-gray-900"
                     onClick={() => router.push("/merchant")}
                   >
                     <Store className="h-4 w-4 mr-2" />
@@ -350,7 +350,7 @@ export default function ProfilePage() {
                 {user.role === "user" && (
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-[#00B4D8] hover:text-[#0096C7] hover:bg-cyan-50"
+                    className="w-full justify-start bg-gradient-to-r from-gray-900 to-gray-700 text-white hover:from-gray-800 hover:to-gray-600 font-bold shadow-lg border-2 border-gray-900"
                     onClick={() => router.push("/merchant/register")}
                   >
                     <Store className="h-4 w-4 mr-2" />

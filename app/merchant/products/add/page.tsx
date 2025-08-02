@@ -498,7 +498,7 @@ export default function AddProductPage() {
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="bg-[#00B4D8] hover:bg-[#0096C7]">
+            <Button type="submit" disabled={loading} className="bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg">
               {loading ? "Adding Product..." : "Add Product"}
             </Button>
           </div>

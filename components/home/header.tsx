@@ -145,7 +145,7 @@ export default function Header() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSearch()}
-                  className="h-6 w-6 p-0 hover:bg-cyan-100 text-[#00B4D8]"
+                  className="h-6 w-6 p-0 hover:bg-gray-100 text-gray-900"
                 >
                   <Search className="h-3 w-3" />
                 </Button>
@@ -184,7 +184,7 @@ export default function Header() {
                     <div className="p-3">
                       {loading ? (
                         <div className="text-center py-4">
-                          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-[#00B4D8] mx-auto"></div>
+                          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-gray-900 mx-auto"></div>
                         </div>
                       ) : suggestions.length > 0 ? (
                         suggestions.map((suggestion, index) => (
@@ -243,7 +243,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleSearch()}
-                className="h-6 w-6 p-0 hover:bg-cyan-100 text-[#00B4D8]"
+                className="h-6 w-6 p-0 hover:bg-gray-100 text-gray-900"
               >
                 <Search className="h-3 w-3" />
               </Button>
@@ -282,7 +282,7 @@ export default function Header() {
                   <div className="p-2">
                     {loading ? (
                       <div className="text-center py-3">
-                        <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-[#00B4D8] mx-auto"></div>
+                        <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-gray-900 mx-auto"></div>
                       </div>
                     ) : suggestions.length > 0 ? (
                       suggestions.map((suggestion, index) => (

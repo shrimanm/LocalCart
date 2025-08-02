@@ -221,7 +221,7 @@ export default function AdminPanel() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -238,7 +238,7 @@ export default function AdminPanel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:py-0 sm:h-16 space-y-3 sm:space-y-0">
             <div className="flex items-center">
-              <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-pink-600 mr-2 sm:mr-3" />
+              <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-gray-900 mr-2 sm:mr-3" />
               <h1 className="text-lg sm:text-xl font-bold">Admin Panel</h1>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-2">
@@ -246,7 +246,7 @@ export default function AdminPanel() {
                 onClick={() => router.push("/admin/analytics")}
                 variant="outline"
                 size="sm"
-                className="border-pink-600 text-pink-600 hover:bg-pink-50 text-xs sm:text-sm"
+                className="border-gray-900 text-gray-900 hover:bg-gray-50 text-xs sm:text-sm"
               >
                 <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Analytics
@@ -325,7 +325,7 @@ export default function AdminPanel() {
           <Card>
             <CardContent className="p-3 sm:p-4">
               <div className="flex flex-col sm:flex-row sm:items-center">
-                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 mb-2 sm:mb-0" />
+                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900 mb-2 sm:mb-0" />
                 <div className="sm:ml-3">
                   <p className="text-xs text-gray-600">Orders</p>
                   <p className="text-sm sm:text-lg font-bold">{stats.totalOrders}</p>

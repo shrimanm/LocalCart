@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/app/providers"
-import { Heart, Star, Eye, Calendar, CheckCircle, Share2, ArrowLeft } from "lucide-react"
+import { Heart, Star, Eye, Calendar, CheckCircle, Share2, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import type { Product } from "@/lib/types"
 import { formatPrice } from "@/lib/utils"
 import BottomNav from "@/components/ui/bottom-nav"
@@ -20,6 +20,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const [selectedSize, setSelectedSize] = useState("")
   const [selectedVariant, setSelectedVariant] = useState("")
   const [selectedColor, setSelectedColor] = useState("")
@@ -34,18 +35,16 @@ export default function ProductPage() {
   const [isBooked, setIsBooked] = useState(false)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingDialog, setBookingDialog] = useState<{ isOpen: boolean; product: any }>({ isOpen: false, product: null })
+  const [buttonClicked, setButtonClicked] = useState(false)
 
   useEffect(() => {
-    if (!user) {
-      router.push("/")
-      return
-    }
-
     fetchProduct()
     fetchReviews()
-    checkWishlistStatus()
-    checkBookingStatus()
-  }, [params.id, user])
+    if (user && token) {
+      checkWishlistStatus()
+      checkBookingStatus()
+    }
+  }, [params.id, user, token])
 
   const fetchProduct = async () => {
     try {
@@ -205,8 +204,13 @@ export default function ProductPage() {
     }
   }
 
-  const handleAddToWishlist = async () => {
+  const handleAddToWishlist = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!token || !product) return
+
+    // Force button to lose focus immediately
+    e.currentTarget.blur()
+    // Remove any active/focus states
+    ;(document.activeElement as HTMLElement)?.blur()
 
     setAddingToWishlist(true)
     try {
@@ -251,11 +255,18 @@ export default function ProductPage() {
     const isRightSwipe = distance < -50
 
     if (isLeftSwipe && selectedImage < product!.images.length - 1) {
-      setSelectedImage(selectedImage + 1)
+      changeImage(selectedImage + 1)
     }
     if (isRightSwipe && selectedImage > 0) {
-      setSelectedImage(selectedImage - 1)
+      changeImage(selectedImage - 1)
     }
+  }
+
+  const changeImage = (newIndex: number) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setSelectedImage(newIndex)
+    setTimeout(() => setIsTransitioning(false), 300)
   }
 
   const handleToggleWishlist = async () => {
@@ -283,7 +294,7 @@ export default function ProductPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -341,39 +352,56 @@ export default function ProductPage() {
               {product.images.length > 1 && (
                 <>
                   <button
-                    onClick={() => setSelectedImage(selectedImage > 0 ? selectedImage - 1 : product.images.length - 1)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-black/70"
+                    onClick={() => changeImage(selectedImage > 0 ? selectedImage - 1 : product.images.length - 1)}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 hover:bg-white hover:scale-110 shadow-lg"
+                    disabled={isTransitioning}
                   >
-                    ←
+                    <ChevronLeft className="h-5 w-5" />
                   </button>
                   <button
-                    onClick={() => setSelectedImage(selectedImage < product.images.length - 1 ? selectedImage + 1 : 0)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-black/70"
+                    onClick={() => changeImage(selectedImage < product.images.length - 1 ? selectedImage + 1 : 0)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 hover:bg-white hover:scale-110 shadow-lg"
+                    disabled={isTransitioning}
                   >
-                    →
+                    <ChevronRight className="h-5 w-5" />
                   </button>
                 </>
               )}
-              <div className="absolute inset-0 flex items-center justify-center p-6">
-                <Image
-                  src={product.images[selectedImage] || "/placeholder.svg"}
-                  alt={product.name}
-                  fill
-                  className="object-contain select-none"
-                  draggable={false}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+              <div className="absolute inset-0 overflow-hidden">
+                <div 
+                  className="flex h-full transition-transform duration-300 ease-out"
+                  style={{ transform: `translateX(-${selectedImage * 100}%)` }}
+                >
+                  {product.images.map((image, index) => (
+                    <div key={index} className="w-full h-full flex-shrink-0 flex items-center justify-center p-6">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`${product.name} - Image ${index + 1}`}
+                          fill
+                          className="object-contain select-none"
+                          draggable={false}
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               
               {/* Image indicators */}
               {product.images.length > 1 && (
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                   {product.images.map((_, index) => (
-                    <div
+                    <button
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                        selectedImage === index ? "bg-[#00B4D8] scale-125" : "bg-gray-400"
+                      onClick={() => changeImage(index)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 hover:scale-150 ${
+                        selectedImage === index 
+                          ? "bg-gray-900 scale-125 shadow-lg" 
+                          : "bg-white/70 hover:bg-white/90"
                       }`}
+                      disabled={isTransitioning}
                     />
                   ))}
                 </div>
@@ -387,10 +415,13 @@ export default function ProductPage() {
                 {product.images.map((image, index) => (
                   <button
                     key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 bg-white transition-all duration-200 ${
-                      selectedImage === index ? "border-[#00B4D8] shadow-md" : "border-gray-200 hover:border-gray-300"
+                    onClick={() => changeImage(index)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 bg-white transition-all duration-300 hover:scale-105 ${
+                      selectedImage === index 
+                        ? "border-gray-900 shadow-lg scale-105" 
+                        : "border-gray-200 hover:border-gray-900/50"
                     }`}
+                    disabled={isTransitioning}
                   >
                     <div className="relative w-full h-full flex items-center justify-center p-1">
                       <Image 
@@ -480,18 +511,19 @@ export default function ProductPage() {
 
             {/* Action Buttons */}
             <div className="flex space-x-3">
-              <Button
+              <button
                 onClick={handleAddToWishlist}
                 disabled={addingToWishlist}
-                className={`flex-1 ${isWishlisted ? 'bg-[#0077B6] hover:bg-[#005F8C] text-white' : 'border border-[#0077B6] text-[#0077B6] hover:bg-[#0077B6] hover:text-white bg-white'}`}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors duration-200 disabled:opacity-50 flex items-center justify-center focus:outline-none active:transform active:scale-95 ${isWishlisted ? 'bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white border border-gray-900 shadow-lg' : 'border border-gray-900 text-gray-900 hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-700 hover:text-white bg-white'}`}
               >
                 <Heart className="h-5 w-5 mr-2" />
                 {addingToWishlist ? "Adding..." : isWishlisted ? "Remove" : "Add"}
-              </Button>
+              </button>
               <Button
                 onClick={handleBookClick}
                 disabled={bookingLoading}
-                className={`flex-1 ${isBooked ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                className={`flex-1 ${isBooked ? '!bg-green-600 hover:!bg-green-700 !text-white !border-green-600' : '!border-gray-900 !text-gray-900 hover:!bg-gray-900 hover:!text-white !bg-white'}`}
               >
                 <Calendar className="h-5 w-5 mr-2" />
                 {bookingLoading ? "Booking..." : isBooked ? "Unbook" : "Book Now"}
@@ -501,7 +533,7 @@ export default function ProductPage() {
             {/* Product Features */}
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-4 bg-white rounded-lg">
-                <Eye className="h-6 w-6 mx-auto mb-2 text-blue-600" />
+                <Eye className="h-6 w-6 mx-auto mb-2 text-gray-900" />
                 <p className="text-sm font-medium">View Details</p>
                 <p className="text-xs text-gray-500">Full Info</p>
               </div>
@@ -534,7 +566,7 @@ export default function ProductPage() {
             <Button 
               onClick={() => setShowReviewForm(!showReviewForm)} 
               variant="outline"
-              className="border-2 border-[#0077B6] text-[#0077B6] hover:bg-[#0077B6] hover:text-white transition-colors"
+              className="!border-2 !border-gray-900 !text-gray-900 hover:!bg-gray-900 hover:!text-white transition-colors"
             >
               Write Review
             </Button>
@@ -575,7 +607,7 @@ export default function ProductPage() {
                   <Button
                     onClick={handleSubmitReview}
                     disabled={submittingReview}
-                    className="bg-[#0077B6] hover:bg-[#005F8C]"
+                    className="!bg-gray-900 hover:!bg-gray-800 !text-white !border-gray-900"
                   >
                     {submittingReview ? "Submitting..." : "Submit Review"}
                   </Button>
@@ -597,7 +629,7 @@ export default function ProductPage() {
               reviews.map((review) => (
                 <div key={review.id} className="bg-white p-6 rounded-lg border">
                   <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-[#0077B6] rounded-full flex items-center justify-center text-white font-medium">
+                    <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-medium">
                       {review.userInitial}
                     </div>
                     <div className="flex-1">

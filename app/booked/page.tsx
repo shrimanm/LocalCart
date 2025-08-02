@@ -160,7 +160,7 @@ export default function BookedPage() {
                       {/* Product Details */}
                       <div className="flex-1 min-w-0">
                         <h3
-                          className="font-semibold text-sm mb-1 line-clamp-2 cursor-pointer hover:text-[#00B4D8]"
+                          className="font-semibold text-sm mb-1 line-clamp-2 cursor-pointer hover:text-gray-900"
                           onClick={() => router.push(`/product/${item.productId}`)}
                         >
                           {item.name}
@@ -194,7 +194,7 @@ export default function BookedPage() {
                           Cancel Booking
                         </Button>
                         <Button
-                          onClick={() => router.push(`/product/${item.productId}`)}
+                          onClick={() => router.push(`/products/${item.productId}`)}
                           variant="outline"
                           className="text-xs px-4"
                           size="sm"

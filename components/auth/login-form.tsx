@@ -162,8 +162,8 @@ export default function LoginForm() {
   const renderPhoneStep = () => (
     <form onSubmit={handleSendOTP} className="space-y-6">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Phone className="h-8 w-8 text-[#00B4D8]" />
+        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Phone className="h-8 w-8 text-gray-900" />
         </div>
         <h3 className="text-xl font-semibold">Enter Your Mobile Number</h3>
         <p className="text-gray-600 mt-2">We'll send you an OTP to verify your number</p>
@@ -197,7 +197,7 @@ export default function LoginForm() {
       <Button
         type="submit"
         disabled={loading || phone.length !== 10}
-        className="w-full bg-[#00B4D8] hover:bg-[#0096C7] h-12 text-lg"
+        className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg h-12 text-lg"
       >
         {loading ? (
           <div className="flex items-center gap-2">
@@ -251,8 +251,8 @@ export default function LoginForm() {
       </div>
       
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <MessageSquare className="h-8 w-8 text-[#00B4D8]" />
+        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <MessageSquare className="h-8 w-8 text-gray-900" />
         </div>
         <h3 className="text-xl font-semibold">Verify OTP</h3>
         <p className="text-gray-600 mt-2">Enter the 6-digit code sent to +91 {phone}</p>
@@ -284,7 +284,7 @@ export default function LoginForm() {
           variant="link"
           onClick={handleResendOTP}
           disabled={resendTimer > 0 || loading}
-          className="text-[#00B4D8] p-0 h-auto"
+          className="text-gray-900 p-0 h-auto"
         >
           {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
         </Button>
@@ -294,7 +294,7 @@ export default function LoginForm() {
       <Button
         type="submit"
         disabled={loading || otp.length !== 6}
-        className="w-full bg-[#00B4D8] hover:bg-[#0096C7] h-12 text-lg"
+        className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg h-12 text-lg"
       >
         {loading ? (
           <div className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export default function LoginForm() {
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-500">
             Have trouble logging in?{" "}
-            <a href="#" className="text-[#00B4D8] hover:underline">
+            <a href="#" className="text-gray-900 hover:underline">
               Get help
             </a>
           </p>

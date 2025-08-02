@@ -181,7 +181,7 @@ export default function WishlistPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -199,14 +199,14 @@ export default function WishlistPage() {
 
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#00B4D8]"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12">
             <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-600 mb-2">Your wishlist is empty</h2>
             <p className="text-gray-500 mb-4">Save items you love to buy them later</p>
-            <Button onClick={() => router.push("/home")} className="bg-[#00B4D8] hover:bg-[#0096C7]">
+            <Button onClick={() => router.push("/home")} className="bg-gray-900 hover:bg-gray-800 text-white">
               Continue Shopping
             </Button>
           </div>
@@ -240,7 +240,7 @@ export default function WishlistPage() {
                       {/* Product Details */}
                       <div className="flex-1 min-w-0">
                         <h3
-                          className="font-semibold text-sm mb-1 line-clamp-2 cursor-pointer hover:text-[#00B4D8]"
+                          className="font-semibold text-sm mb-1 line-clamp-2 cursor-pointer hover:text-gray-900"
                           onClick={() => router.push(`/product/${item.productId}`)}
                         >
                           {item.name}
@@ -269,7 +269,7 @@ export default function WishlistPage() {
                           className={`text-white text-xs px-4 ${
                             bookedItems.has(item.productId)
                               ? "bg-green-600 hover:bg-green-700"
-                              : "bg-blue-600 hover:bg-blue-700"
+                              : "bg-gray-900 hover:bg-gray-800"
                           }`}
                           size="sm"
                         >
@@ -295,7 +295,7 @@ export default function WishlistPage() {
                         className={`flex-1 text-white text-xs ${
                           bookedItems.has(item.productId)
                             ? "bg-green-600 hover:bg-green-700"
-                            : "bg-blue-600 hover:bg-blue-700"
+                            : "bg-gray-900 hover:bg-gray-800"
                         }`}
                         size="sm"
                       >

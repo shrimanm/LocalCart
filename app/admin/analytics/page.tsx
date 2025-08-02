@@ -95,7 +95,7 @@ export default function AdminAnalytics() {
   if (!user || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -109,7 +109,7 @@ export default function AdminAnalytics() {
               <Button variant="ghost" onClick={() => router.push("/admin")} className="mr-2 sm:mr-4 p-2">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 mr-2 sm:mr-3" />
+              <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900 mr-2 sm:mr-3" />
               <h1 className="text-lg sm:text-xl font-bold">Admin Analytics</h1>
             </div>
             <div className="flex items-center">

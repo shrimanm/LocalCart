@@ -163,7 +163,7 @@ function MerchantDashboardContent() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B4D8]"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -180,7 +180,7 @@ function MerchantDashboardContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:py-0 sm:h-16">
             <div className="flex items-center mb-4 sm:mb-0">
-              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-[#00B4D8] mr-2 sm:mr-3" />
+              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-gray-900 mr-2 sm:mr-3" />
               <div>
                 <h1 className="text-lg sm:text-xl font-bold">Merchant Dashboard</h1>
                 {shop && <p className="text-xs sm:text-sm text-gray-600">{shop.name}</p>}
@@ -194,12 +194,12 @@ function MerchantDashboardContent() {
                 onClick={() => router.push("/merchant/analytics")}
                 variant="outline"
                 size="sm"
-                className="border-[#00B4D8] text-[#00B4D8] hover:bg-cyan-50 text-xs sm:text-sm"
+                className="border-gray-900 text-gray-900 hover:bg-gray-50 text-xs sm:text-sm"
               >
                 <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Analytics
               </Button>
-              <Button onClick={() => router.push("/merchant/products/add")} className="bg-[#00B4D8] hover:bg-[#0096C7]" size="sm">
+              <Button onClick={() => router.push("/merchant/products/add")} className="bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg" size="sm">
                 <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Add Product
               </Button>
@@ -238,7 +238,7 @@ function MerchantDashboardContent() {
           <Card>
             <CardContent className="p-3 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center">
-                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-[#00B4D8] mb-2 sm:mb-0" />
+                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-gray-900 mb-2 sm:mb-0" />
                 <div className="sm:ml-4">
                   <p className="text-xs sm:text-sm font-medium text-gray-600">Active Products</p>
                   <p className="text-lg sm:text-2xl font-bold">{stats.activeProducts}</p>
@@ -293,7 +293,7 @@ function MerchantDashboardContent() {
                     <p className="text-gray-500 mb-4">Add your first product to start selling</p>
                     <Button
                       onClick={() => router.push("/merchant/products/add")}
-                      className="bg-[#00B4D8] hover:bg-[#0096C7]"
+                      className="bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg"
                     >
                       Add Product
                     </Button>

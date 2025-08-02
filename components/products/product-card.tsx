@@ -11,6 +11,7 @@ import { Heart, Star } from "lucide-react"
 import { useAuth } from "@/app/providers"
 import { useRouter } from "next/navigation"
 import { formatPrice } from "@/lib/utils"
+import { createProductUrl } from "@/lib/slug"
 // import type { Product } from "@/lib/types"
 
 interface Product {
@@ -82,8 +83,8 @@ export default function ProductCard({ product, onWishlistToggle, isWishlisted = 
   return (
     <Card className="group cursor-pointer hover:shadow-lg transition-all duration-200" onClick={handleCardClick}>
       <CardContent className="p-0">
-        <div className="relative aspect-[4/5] bg-white border border-gray-100 rounded-t-lg overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div className="relative aspect-[4/5] bg-white border border-gray-100 rounded-t-lg overflow-hidden m-2">
+          <div className="absolute inset-0 flex items-center justify-center p-8">
             <Image
               src={product.images[0] || "/placeholder.svg"}
               alt={product.name}
@@ -118,7 +119,7 @@ export default function ProductCard({ product, onWishlistToggle, isWishlisted = 
             <p className="product-brand truncate">{product.brand}</p>
 
             {/* Product Name */}
-            <h3 className="product-title line-clamp-2 group-hover:text-[#00B4D8] transition-colors">
+            <h3 className="product-title line-clamp-2 group-hover:text-gray-900 transition-colors">
               {product.name}
             </h3>
 
@@ -167,7 +168,7 @@ export default function ProductCard({ product, onWishlistToggle, isWishlisted = 
           <Button
             onClick={handleAddToWishlist}
             className={`w-full btn-text py-1 lg:py-2 mt-2 ${
-              isWishlisted ? "bg-[#0077B6] hover:bg-[#005F8C] text-white" : "border border-[#0077B6] text-[#0077B6] hover:bg-[#0077B6] hover:text-white bg-white"
+              isWishlisted ? "bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white shadow-lg" : "border border-gray-900 text-gray-900 hover:bg-gradient-to-r hover:from-gray-900 hover:to-gray-700 hover:text-white bg-white"
             }`}
             size="sm"
           >
